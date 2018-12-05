@@ -15,10 +15,26 @@
 
 ```html
 <template>
-  <iForm label-width="100px" :rules="rules" :model="model" ref="ruleForm">
+  <iForm label-width="100px" :model="model" ref="ruleForm">
     <iFormRows :rows="rows"></iFormRows>
-      <el-button @click="validate">validate</el-button>
-      <el-button @click="reset">reset</el-button>
+    <div class="margin">
+      <span class="label">global status:</span>
+      <el-button @click="setStatus('edit')">status edit</el-button>
+      <el-button @click="setStatus('preview')">status preview</el-button>
+      <el-button @click="setStatus('disabled')">status disabled</el-button>
+    </div>
+    <div class="margin">
+      <span class="label">name status:</span>
+      <el-button @click="setLocalStatus('job', 'edit')">status edit</el-button>
+      <el-button @click="setLocalStatus('job', 'preview')">status preview</el-button>
+      <el-button @click="setLocalStatus('job', 'disabled')">status disabled</el-button>
+    </div>
+    <div class="margin">
+      <span class="label">age status:</span>
+      <el-button @click="setLocalStatus('isMsg', 'edit')">status edit</el-button>
+      <el-button @click="setLocalStatus('isMsg', 'preview')">status preview</el-button>
+      <el-button @click="setLocalStatus('isMsg', 'disabled')">status disabled</el-button>
+    </div>
   </iForm>
 </template>
 
@@ -27,44 +43,37 @@ export default {
   data: () => ({
     model: {
       job: '',
-      age: ''
-    },
-    rules: {
-      'job': [
-          { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-      ],
-      age: [
-        {type: "number", required: true, transform(value) {
-            return parseInt(value, 10)
-        }},
-        {validator(rule, value, callback, source, options) {
-            if(value < 18){
-                callback(['too young']);
-            }
-            callback([])
-        }}
-      ]
+      isMsg: ''
     }
   }),
   computed: {
     rows (h) {
       return [
         { label: 'name', name: 'job', type: 'input' },
-        { label: 'age', name: 'age', type: 'input'}
+        { label: 'isMsg', name: 'isMsg', type: 'radio', options: [{value: 1, name: '否'}, {value: 2, name:'是'}]}
       ]
     }
   },
   methods: {
-    reset () {
-      this.$refs.ruleForm.resetFields()
+    setStatus (status) {
+      this.$refs.ruleForm.setGlobalStatus(status)
     },
-    validate () {
-      this.$refs.ruleForm.validate()
+    setLocalStatus (name, status) {
+      this.$refs.ruleForm.setStatus(name, status)
     }
   }
 }
 </script>
+
+<style scoped>
+.label {
+  display: inline-block;
+  width: 120px;
+}
+.margin{
+  margin: 5px 0;
+}
+</style>
 ```
 
   </div>
